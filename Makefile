@@ -6,6 +6,7 @@ mDB_DIR=$(shell pwd)/_db-$(mV)
 start_db:
 	@echo Starting MySQL $(V)
 	docker run --rm -d --name spatial-mysql \
+	        --platform "linux/x86_64" \
             -p 3306:3306 \
             -v $(DB_DIR):/var/lib/mysql \
             -e MYSQL_DATABASE=spatial_test \

@@ -14,6 +14,7 @@ use Grimzy\LaravelMysqlSpatial\Doctrine\Point;
 use Grimzy\LaravelMysqlSpatial\Doctrine\Polygon;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\DatabaseServiceProvider;
+use Illuminate\Database\DatabaseTransactionsManager;
 
 /**
  * Class DatabaseServiceProvider.
@@ -21,11 +22,12 @@ use Illuminate\Database\DatabaseServiceProvider;
 class SpatialServiceProvider extends DatabaseServiceProvider
 {
     /**
-     * Register the service provider.
+     * Register the primary database bindings.
      *
      * @return void
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function register()
+    protected function registerConnectionServices()
     {
         // The connection factory is used to create the actual connection instances on
         // the database. We will inject the factory into the manager so that it may
@@ -39,6 +41,18 @@ class SpatialServiceProvider extends DatabaseServiceProvider
         // interface which may be used by other components requiring connections.
         $this->app->singleton('db', function ($app) {
             return new DatabaseManager($app, $app['db.factory']);
+        });
+
+        $this->app->bind('db.connection', function ($app) {
+            return $app['db']->connection();
+        });
+
+        $this->app->bind('db.schema', function ($app) {
+            return $app['db']->connection()->getSchemaBuilder();
+        });
+
+        $this->app->singleton('db.transactions', function ($app) {
+            return new DatabaseTransactionsManager;
         });
 
         if (class_exists(DoctrineType::class)) {
