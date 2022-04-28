@@ -13,6 +13,7 @@ class BuilderTest extends BaseTestCase
     public function testReturnsCorrectBlueprint()
     {
         $connection = Mockery::mock(MysqlConnection::class);
+        $connection->shouldReceive('getConfig')->andReturn('');
         $connection->shouldReceive('getSchemaGrammar')->once()->andReturn(null);
 
         $mock = Mockery::mock(Builder::class, [$connection]);
