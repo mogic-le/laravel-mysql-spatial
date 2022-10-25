@@ -8,6 +8,9 @@ jobs:
     strategy:
       matrix:
         php: ['8.1', '8.2']
+        include:
+          - php: '8.2'
+            option: '--ignore-platform-req=php+'
     services:
       db:
         image: mysql:8.0.23
@@ -27,6 +30,6 @@ jobs:
           tools: composer:v2
           extensions: mbstring, dom, fileinfo, pdo, pcntl
           coverage: none
-      - run: composer install
+      - run: composer install ${{ matrix.option }}
       - name: run test
         run: vendor/bin/phpunit
