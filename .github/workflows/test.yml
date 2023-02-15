@@ -27,7 +27,7 @@ jobs:
           ini-file: development
           tools: composer:v2
           extensions: mbstring, dom, fileinfo, pdo, pcntl
-          coverage: none
+          coverage: xdebug
       - run: composer install
       - name: run test
         run: vendor/bin/phpunit

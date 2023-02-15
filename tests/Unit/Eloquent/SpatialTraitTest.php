@@ -4,6 +4,7 @@ use Grimzy\LaravelMysqlSpatial\Exceptions\SpatialFieldsNotDefinedException;
 use Grimzy\LaravelMysqlSpatial\MysqlConnection;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Grammar;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery as m;
 
@@ -14,17 +15,23 @@ class SpatialTraitTest extends BaseTestCase
     /**
      * @var TestModel
      */
-    protected $model;
+    protected TestModel $model;
 
     /**
      * @var array
      */
-    protected $queries;
+    protected array $queries;
+
+    /**
+     * @var Grammar
+     */
+    protected Grammar $grammar;
 
     public function setUp(): void
     {
         $this->model = new TestModel();
         $this->queries = &$this->model->getConnection()->getPdo()->queries;
+        $this->grammar = $this->model->getConnection()->getQueryGrammar();
     }
 
     public function tearDown(): void
@@ -303,7 +310,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue($this->grammar));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -319,7 +326,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue($this->grammar));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -335,7 +342,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('*', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue($this->grammar));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
@@ -351,7 +358,7 @@ class SpatialTraitTest extends BaseTestCase
         $this->assertNotEmpty($bindings);
         $this->assertEquals('some_column', $q->columns[0]);
         $this->assertInstanceOf(\Illuminate\Database\Query\Expression::class, $q->columns[1]);
-        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue());
+        $this->assertEquals('st_distance_sphere(`point`, ST_GeomFromText(?, ?, \'axis-order=long-lat\')) as distance', $q->columns[1]->getValue($this->grammar));
         $this->assertEquals('POINT(2 1)', $bindings[0]);
     }
 
