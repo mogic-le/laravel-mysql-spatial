@@ -81,7 +81,7 @@ trait SpatialTrait
         );
     }
 
-    protected function performInsert(EloquentBuilder $query, array $options = [])
+    protected function performInsert(EloquentBuilder $query)
     {
         foreach ($this->attributes as $key => $value) {
             if ($value instanceof GeometryInterface) {
@@ -90,7 +90,7 @@ trait SpatialTrait
             }
         }
 
-        $insert = parent::performInsert($query, $options);
+        $insert = parent::performInsert($query);
 
         foreach ($this->geometries as $key => $value) {
             $this->attributes[$key] = $value; //Retrieve the geometry objects so they can be used in the model
