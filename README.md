@@ -1,3 +1,15 @@
+# Fork for Laravel-9
+This is forked and downgraded to work with laravel 9 in my project.
+
+Aim was to fix the error:
+SQLSTATE[42000]: Syntax error or access violation: 1582 Incorrect parameter count in the call to native function 'ST_GeomFromText' (SQL: insert into points (point) values (ST_GeomFromText(POINT(x,y), 0, 'axis-order=long-lat'))
+
+for my laravel 9 project
+
+[!Issue](https://github.com/grimzy/laravel-mysql-spatial/issues/138)
+
+
+
 # Laravel MySQL Spatial extension
 
 [![Build Status](https://img.shields.io/travis/grimzy/laravel-mysql-spatial.svg?style=flat-square)](https://travis-ci.org/grimzy/laravel-mysql-spatial)
